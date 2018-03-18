@@ -16,9 +16,9 @@ class CrawlerManager {
       lastTS: Date.now()
     };
   }
-  put(tick) {
-    this._buf.push(tick);
-    this._eat.lastTS = tick.timestamp;
+  put(...ticks) {
+    this._buf.push(...ticks);
+    this._eat.lastTS = ticks[ticks.length - 1].timestamp;
     if (this._eat.promise) {
       const resolve = this._eat.resolve;
       this._eat.promise = this._eat.resolve = null;
