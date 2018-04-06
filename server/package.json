@@ -1,0 +1,45 @@
+{
+  "name": "btc-trader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./script/build.js",
+    "dev": "pm2 start ecosystem.config.js --only dev__btc-trader --no-daemon",
+    "start": "pm2 start ecosystem.config.js --only btc-trader",
+    "db:sync": "SYNC_SCHEMA=true NODE_ENV=production node app/index.js",
+    "db:sync-dev": "SYNC_SCHEMA=true NODE_ENV=development node app/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix ./app",
+    "validate": "npm ls"
+  },
+  "author": "Yuhang Ge <abeyuhang@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bson": "^2.0.4",
+    "co-body": "^5.1.1",
+    "elasticsearch": "^14.2.1",
+    "generate-password": "^1.4.0",
+    "joi": "^13.0.1",
+    "koa": "^2.3.0",
+    "koa-router": "^7.2.1",
+    "koa-session": "^5.5.0",
+    "lodash": "^4.17.4",
+    "mime-types": "^2.1.17",
+    "mysql2": "^1.4.2",
+    "redis": "^2.8.0",
+    "request-ip": "^2.0.2",
+    "sqlite3": "^4.0.0",
+    "typeorm": "^0.2.0-alpha.32"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "pm2": "^2.7.2",
+    "precommit-hook": "^3.0.0",
+    "uglify-es": "^3.1.6"
+  },
+  "private": true,
+  "pre-commit": [
+    "lint"
+  ]
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BTC Trader</title>
+  <base href="/__public/"/>
+  <link rel="icon" type="image/x-icon" href="global/image/favicon.ico" />
+  <link rel="shortcut icon" type="image/x-icon" href="global/image/favicon.ico" />
+  <style id="splash_screen_style">
+    /* stylelint-disable */
+    #splash_screen{position:fixed;z-index:99999;left:0;top:0;width:100vw;height:100vh;text-align:center}#splash_screen p.error{font-size:16px;color:#f44336}#splash_screen .splash{text-align:center;font-size:13px;color:#666;margin-top:20px;font-family:Arial,sans-serif}#splash_screen .loader{position:relative;margin:0 auto;width:25px}#splash_screen .loader:before{content:'';display:block;padding-top:100%}#splash_screen .loader .circular{-webkit-animation:splash_screen_rotate 2s linear infinite;animation:splash_screen_rotate 2s linear infinite;height:100%;-webkit-transform-origin:center center;transform-origin:center center;width:100%;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto}#splash_screen .loader .path{stroke-dasharray:1,200;stroke-dashoffset:0;-webkit-animation:splash_screen_dash 1.5s ease-in-out infinite,splash_screen_color 10.5s ease-in-out infinite;animation:splash_screen_dash 1.5s ease-in-out infinite,splash_screen_color 10.5s ease-in-out infinite;stroke-linecap:round}@keyframes splash_screen_rotate{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes splash_screen_dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35px}100%{stroke-dasharray:89,200;stroke-dashoffset:-124px}}@keyframes splash_screen_color{0%,100%{stroke:#f44336}14.29%{stroke:#ff9800}28.57%{stroke:#ffeb3b}42.86%{stroke:#4caf50}57.14%{stroke:#00bcd4}71.43%{stroke:#2196f3}85.71%{stroke:#9c27b0}}
+  </style>
+</head>
+<body>
+<div id="splash_screen">
+  <div class="splash">
+    <div style="display: inline-block; width: 25px;">
+      <div class="loader" style="position: relative; top: 6px;">
+        <svg class="circular" viewBox="25 25 50 50">
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10"></circle>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="root-app" id="app-react-container"></div>
+<script>
+  /* do not touch code bellow */
+  window.__AppBootInfo = {
+    env: {},
+    user: {},
+    locale: {},
+    files: {},
+    bootstrap: null
+  };
+</script>
+</body>
+</html>

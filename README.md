@@ -1,3 +1,3 @@
 # btc-trader
 
-> btc analysis & trader for huobi.com
+> btc trader for https://huobipro.com
