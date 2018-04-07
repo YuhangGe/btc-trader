@@ -5,6 +5,7 @@ import {
   isUndefined
 } from 'lodash';
 
+const API_ROOT = joinUrl(env.URL_SERVER_ROOT, env.URL_API_PREFIX);
 const FULL_URL_REG = /^http(?:s?):/;
 const ACEEPT_BODY_METHODS = ['POST', 'PUT', 'DELETE'];
 const ABORTED_ERROR = {
@@ -22,7 +23,7 @@ function fetch(url, options = {}) {
     if (options.urlPrefix) {
       url = joinUrl(options.urlPrefix, url);
     } else if (!FULL_URL_REG.test(url)) {
-      url = joinUrl(env.API_ROOT, url);
+      url = joinUrl(API_ROOT, url);
     }
     options.method = options.method || 'GET';
     let params = options.params || options.query;

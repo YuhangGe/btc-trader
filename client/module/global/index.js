@@ -1,5 +1,9 @@
-// import Login from './component/user/Login';
+import Login from './component/user/Login';
 
 export default {
-  States: []
+  States: [{
+    name: 'login',
+    url: '/login',
+    component: Login
+  }]
 };

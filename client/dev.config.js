@@ -131,7 +131,7 @@ module.exports = {
   bundleExternals: {
     react: 'React',
     'react-dom': 'ReactDOM',
-    'antd-mobile': 'antd-mobile',
+    'antd-mobile': 'window[\'antd-mobile\']',
     '@uirouter/react': 'UIRouterReact'
   },
   /*

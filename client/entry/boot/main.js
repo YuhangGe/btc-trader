@@ -1,4 +1,5 @@
 import '../service/common/polyfill';
+import './fetch';
 import allModules from './module';
 import router from './router';
 import ReactDOM from 'react-dom';

@@ -1,22 +1,18 @@
 import React from 'react';
 import {
-  TextField,
-  PrimaryButton,
-  Link,
-  Spinner,
-  SpinnerSize
-} from 'fabric';
-import {
-  UISref
-} from '@uirouter/react';
+  WingBlank,
+  List, WhiteSpace,
+  InputItem,
+  Toast,
+  Button
+} from 'antd-mobile';
 import {
   hashPassword,
-  validateForm, validateField,
-  fetch
+  validateForm, validateField
 } from 'util';
 import router from 'router';
+import env from 'env';
 import user from 'user';
-import message from 'message';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -82,16 +78,12 @@ export default class Login extends React.Component {
       this.setState({
         _submitting: false
       });
-      user.update(Object.assign({
-        username: form.username.value
-      }, info));
-      const params = router.globals.params;
-      router.stateService.go(params.returnState || 'join', params.returnParams || null, {
-        location: 'replace'
-      });
+      const needReload = info.locale && user.locale !== info.locale;
+      user.update(info);
+      this.jump(needReload);
     }, err => {
       logger.error(err);
-      message.error('登录失败！', err.message);
+      Toast.fail('登录失败！', err.message);
       this.setState({
         _submitting: false
       });
@@ -104,47 +96,53 @@ export default class Login extends React.Component {
       form
     });
   }
+  _toastError(fieldName) {
+    Toast.fail(this.state.form[fieldName].error);
+  }
+  jump(reload) {
+    window.history.replaceState(
+      null,
+      null,
+      router.globals.params.url || env.SERVER_ROOT
+    );
+    reload && setTimeout(() => {
+      window.location.reload(true);
+    });
+  }
   render() {
     const form = this.state.form;
 
     return (
-      <div className="login-layer">
-        <div className="login-form">
-          <div className="title">
-            <h2>登录</h2>
-            <div className="jump">
-              <UISref to="register">
-                <Link>注册账户</Link>
-              </UISref>
-            </div>
-          </div>
-          <TextField
-            onChanged={this._updateField.bind(this, 'username')}
-            onGetErrorMessage={this._validateField.bind(this, 'username')}
-            value={form.username.value}
-            onKeyDown={this._clearFieldError.bind(this, 'username')}
-            validateOnLoad={false}
-            validateOnFocusOut={true}
-            errorMessage={form.username.error}
-            placeholder={form.username.placeholder}
-          />
-          <TextField
-            onChanged={this._updateField.bind(this, 'password')}
-            onGetErrorMessage={this._validateField.bind(this, 'password')}
-            onKeyDown={this._clearFieldError.bind(this, 'password')}
-            value={form.password.value}
-            validateOnLoad={false}
-            validateOnFocusOut={true}
-            type="password"
-            errorMessage={form.password.error}
-            placeholder={form.password.placeholder}
-          />
-          <PrimaryButton className={this.state._submitting ? 'loading' : ''}
-            onClick={this.submit.bind(this)}>
-            {this.state._submitting ? (<Spinner size={SpinnerSize.small} />) : null}
-            <span>登录</span>
-          </PrimaryButton>
-        </div>
+      <div className="login-page">
+        <WingBlank>
+          <h2>BTC-Trader</h2>          
+          <List renderHeader={() => '登录'}>
+            <InputItem
+              placeholder="请输入用户名"
+              error={form.username.error}
+              onErrorClick={this._toastError.bind(this, 'username')}
+              onChange={this._updateField.bind(this, 'username')}
+              onBlur={this._validateField.bind(this, 'username')}
+              onKeyDown={this._clearFieldError.bind(this, 'username')}
+              value={form.username.value}
+            >用户名</InputItem>
+            <InputItem
+              type="password"
+              placeholder="请输入密码"
+              error={form.password.error}
+              onErrorClick={this._toastError.bind(this, 'password')}
+              onChange={this._updateField.bind(this, 'password')}
+              onBlur={this._validateField.bind(this, 'password')}
+              onKeyDown={this._clearFieldError.bind(this, 'password')}
+              value={form.password.value}
+            >密码</InputItem>
+          </List>
+          <WhiteSpace/>
+          <Button
+            type="primary"
+            onClick={this.submit.bind(this)}
+          >登录</Button>
+        </WingBlank>
       </div>
     );
   }
