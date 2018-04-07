@@ -4,7 +4,11 @@ const UserSettingForm = require('../form/UserSetting');
 const PasswordResetForm = require('../form/ResetPassword');
 const User = require(__common + 'model/User');
 const _ = require('lodash');
-const { logger } = require(__framework);
+const {
+  logger,
+  verifyPassword,
+  encodePassword
+} = require(__framework);
 
 async function session() {
   const user = await User.findOneById(this.user.id);
@@ -35,7 +39,7 @@ async function login() {
   const user = await User.findOne({
     username: form.username
   });
-  if (!user || !(await this.hash.verifyPassword(user.password, form.password))) {
+  if (!user || !(await verifyPassword(user.password, form.password))) {
     this.session = null;  // destroy previous
     return this.error(1001, 'error.login');
   }
@@ -46,7 +50,7 @@ async function login() {
 
 async function register() {
   const user = new User(await this.fillForm(UserForm));
-  user.password = await this.hash.encodePassword(user.password);
+  user.password = await encodePassword(user.password);
   await user.save();
   this.success({ id: user.id });
 }
@@ -71,11 +75,11 @@ async function resetPassword() {
   const user = await User.findOne({ id: this.session.userId });
   const form = await this.fillForm(PasswordResetForm);
 
-  if (!(await this.hash.verifyPassword(user.password, form.oldPassword))) {
+  if (!(await verifyPassword(user.password, form.oldPassword))) {
     return this.error(403, 'old password is wrong');
   }
 
-  user.password = await this.hash.encodePassword(form.newPassword);
+  user.password = await encodePassword(form.newPassword);
   await user.save();
   this.session = null;
   this.success({ id: user.id });

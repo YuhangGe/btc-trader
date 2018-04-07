@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const passwordGenerator = require('generate-password');
+const _ = require('lodash');
 
 function wrapPromise(fn) {
   return function (...args) {
@@ -69,8 +70,61 @@ function generatePassword(options) {
   }, options || {}));
 }
 
+
+/*
+ * yml 中的配置是扁平化的，需要还原成嵌套化 object
+ *
+ * server.port: 8080
+ * server.host: 127.0.0.1
+ *
+ * 还原成
+ *
+ * server: {
+ *   port: 8080,
+ *   host: '127.0.0.1'
+ * }
+ */
+function extractYml(ymlObj) {
+  const newObj = {};
+  for(const k in ymlObj) {
+    let co = newObj;
+    const ks = k.split('.');
+    const v = ymlObj[k];
+    ks.forEach((ck, i) => {
+      if (i === ks.length - 1) {
+        co[ck] = v;
+        return;
+      }
+      if (!co.hasOwnProperty(ck)) {
+        co[ck] = {};
+      }
+      co = co[ck];
+    });
+    if (!Array.isArray(v)) {
+      continue;
+    }
+    for(let i = 0; i < v.length; i++) {
+      if (_.isObject(v[i])) {
+        v[i] = extractYml(v[i]);
+      }
+    }
+  }
+  return newObj;
+}
+
+function existsSync(file) {
+  try {
+    fs.accessSync(file);
+    return true;
+  } catch(ex) {
+    return false;
+  }
+}
+
 module.exports = {
   generatePassword,
+  extractYml,
+  existsSync,
   writeFile: wrapPromise(fs.writeFile),
   randomBytes: wrapPromise(crypto.randomBytes),
   decorate,

@@ -1,3 +1,5 @@
+require('./service/watcher');
+
 const { 
   Router,
   authorize

@@ -1,18 +1,19 @@
-const path = require('path');
-const fs = require('fs');
 const total = require('os').cpus().length;
 const appName = require('./package.json').name;
+const INSTANCE_COUNT = Math.min(total, 10);
 
 const PROD_APP = {
   name      : appName,
   merge_logs: true,
-  log_date_format : "YYYY-MM-DD HH:mm:ss.SSS Z",
+  log_date_format : 'YYYY-MM-DD HH:mm:ss.SSS Z',
   out_file  : `${appName}.out.log`,
   error_file: `${appName}.err.log`,
   script    : 'app/index.js',
-  instances : Math.min(total, 10),
+  instances : INSTANCE_COUNT,
+  instance_var: 'CLUSTER_ID',
   exec_mode : 'cluster',
   env : {
+    CLUSTER_COUNT: INSTANCE_COUNT,
     NODE_ENV: 'production'
   }
 };

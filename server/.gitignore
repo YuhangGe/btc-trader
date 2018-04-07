@@ -9,7 +9,10 @@ dist
 yarn.lock
 /app/config/config.custom.js
 /app/framework/.secretKey
+/app/_bk
 /run
+
+**/*.log
 
 .jshintignore
 .jshintrc

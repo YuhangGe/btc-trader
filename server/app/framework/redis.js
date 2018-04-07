@@ -1,7 +1,10 @@
+const logger = require('./logger');
+const config = require('./config');
+
 let client = null;
-async function getRedisClient(config, logger) {
+async function getRedisClient() {
   if (client) return client; // singleton
-  client = require('redis').createClient(config);
+  client = require('redis').createClient(config.redis);
   client.on('error', err => {
     logger.error(err);
   });

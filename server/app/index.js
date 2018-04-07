@@ -8,10 +8,15 @@ global.__root = __dirname + '/';
 global.__framework = path.join(__dirname, 'framework/');
 global.__common = path.join(__dirname, 'common/');
 global.__module = path.join(__dirname, 'module/');
+global.__service = path.join(__dirname, 'service/');
 /*
  * 
  */
-const { bootstrap } = require('./framework');
+const {
+  bootstrap,
+  config,
+  logger
+} = require('./framework');
 
 bootstrap({
   beforeStart: async function(app) {
@@ -25,7 +30,7 @@ bootstrap({
        * 因为框架需要进行数据库相关初始化。
        */
       await require('./init_data')(app);
-      app.logger.info('finish sync, process exit.');
+      logger.info('finish sync, process exit.');
       process.exit(0);
     }
     /*
@@ -33,7 +38,7 @@ bootstrap({
      * 这个方法只适用于初始化，但如果是数据库发生了变更，需要手动执行 migrate
      */
     const adminUser = await require('./common/model/User').findOne({
-      username: app.config.admin.username
+      username: config.initialize.admin.username
     });
 
     if (adminUser) {

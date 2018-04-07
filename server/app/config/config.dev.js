@@ -29,10 +29,5 @@ module.exports = {
       password: 'root',
       database: 'test'
     }
-  },
-  elastic: {
-    enable: false,
-    hosts: [ '127.0.0.1:9200' ],
-    apiVersion: '6'
   }
 };

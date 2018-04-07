@@ -5,6 +5,8 @@ const logger = require('./logger');
 const { extendContext } = require('./context');
 const util = require('./util');
 const { authorizeMiddleware } = require('./session');
+const config = require('./config');
+const { encodePassword, verifyPassword } = require('./hash');
 
 const { 
   BaseModel,
@@ -31,6 +33,9 @@ const framework = {
   bootstrap,
   Router,
   logger,
+  config,
+  encodePassword,
+  verifyPassword,
   extendContext,
   authorize: authorizeMiddleware,
   privilege: authorizeMiddleware,

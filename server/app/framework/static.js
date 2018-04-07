@@ -3,29 +3,18 @@ const path = require('path');
 const fs = require('fs');
 const mime = require('mime-types');
 const zlib = require('zlib');
-
+const logger = require('./logger');
+const config = require('./config');
 const NOT_EXIST_CODES = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
 const cache = new Map();
 
-function _joinUrl(...args) {
-  return args.join('/').replace(/\/+/g, '/');
-}
-
 function replaceEnv(indexBuffer, env) {
   let text = indexBuffer.toString('utf-8');
-  text = text.replace(/\$\{ASSET_ROOT\}/g, _joinUrl(env.SERVER_ROOT, env.ASSET_PREFIX));
-  text = text.replace(/\$\{TITLE\}/g, env.TITLE);
-  text = text.replace('/** PRODUCTION ENV **/', [
-    'SERVER_MODE', 'SERVER_ROOT', 'API_PREFIX', 'ASSET_PREFIX',
-  ].map(k => `${k}:${JSON.stringify(env[k])}`).join(', ') + ',\n');
+  text = text.replace('env: {},', `env: ${JSON.stringify(env)},`);
   return Buffer.from(text, 'utf-8');
 }
 
-async function initStatic(app, config) {
-  if (!config || !config.path) return;
-  const apiPrefix = `/${app.config.router.prefix || ''}/`.replace(/\/+/g, '/');
-  const assetPrefix = `/${config.prefix || ''}/`.replace(/\/+/g, '/');
-  const appTitle = app.config.app.title;
+async function initStatic(app) {
   app.use(async (ctx, next) => {
     let url = ctx.url;
     /*
@@ -33,9 +22,9 @@ async function initStatic(app, config) {
      * /__api/ 打头的全部是 API 接口请求
      * 其它所有路由都返回 index.html
      */
-    if (url.startsWith(assetPrefix)) {
+    if (url.startsWith('/__public/')) {
       url = url.substring(10);
-    } else if (url.startsWith(apiPrefix)) {
+    } else if (url.startsWith('/__api/')) {
       await next();
       // important to return
       return;
@@ -47,7 +36,7 @@ async function initStatic(app, config) {
       url = url.substring(0, i);
     }
     // logger.debug(url);
-    const file = path.join(config.path, url);
+    const file = path.join(config.static.path, url);
     let stat;
 
     try {
@@ -55,7 +44,7 @@ async function initStatic(app, config) {
     } catch (ex) {
       if (NOT_EXIST_CODES.indexOf(ex.code) < 0) {
         // 对于某些意料之外的异常类型，打印日志
-        ctx.logger.error(ex);
+        logger.error(ex);
       }
       ctx.throw(404);
       return;
@@ -99,11 +88,7 @@ async function initStatic(app, config) {
         };
         if (url === '/index.html') {
           f.buffer = replaceEnv(f.buffer, {
-            SERVER_MODE: app.config.server.mode,
-            SERVER_ROOT: app.config.server.root,
-            API_PREFIX: apiPrefix,
-            ASSET_PREFIX: assetPrefix,
-            TITLE: appTitle
+            SERVER_ROOT: config.server.root,
           });
         }
         const gzipOut = await new Promise((resolve, reject) => {

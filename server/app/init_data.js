@@ -3,7 +3,12 @@ const _ = require('lodash');
 const User = require(__common + 'model/User');
 const Role = require(__common + 'model/Role');
 const Privilege = require(__common + 'model/Privilege');
-const { util, logger } = require(__framework);
+const {
+  util,
+  logger,
+  encodePassword,
+  config
+} = require(__framework);
 
 async function initRolesAndPrivileges(app) {
 
@@ -59,9 +64,9 @@ async function initRolesAndPrivileges(app) {
 }
 
 async function initUsers(app, rp) {
-  const admin = app.config.admin;
+  const admin = config.initialize.admin;
   admin.roles = rp.roles;
-  const users = [admin].concat((app.config.users || []).map(u => {
+  const users = [admin].concat((config.initialize.users || []).map(u => {
     u.roles = u.roles.map(r => _.find(rp.roles, rm => rm.id === r)).filter(r => !!r);
     return u;
   }));
@@ -78,7 +83,7 @@ async function initUsers(app, rp) {
       logger.info('Generate new password for', users[i].username, ' ==> ', users[i].password);
     }
     if (!u.password) {
-      u.password = await app.hash.encodePassword(users[i].password, true);      
+      u.password = await encodePassword(users[i].password, true);      
     }
     users[i] = u;
   }

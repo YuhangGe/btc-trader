@@ -4,6 +4,7 @@ const _util = require('./util');
 const path = require('path');
 const { ObjectId } = require('bson');
 const logger = require('./logger');
+const config = require('./config');
 
 const EMPTY_OBJECT = {};
 
@@ -138,12 +139,12 @@ function registerConnection(connection) {
   __entityManager = connection.entityManager;
 }
 
-async function getConnection(config) {
+async function getConnection() {
   if (__connection) return __connection;
   __config = Object.assign({
-    type: config.type,
-    synchronize: !!config.synchronize,
-  }, config[config.type]);
+    type: config.db.type,
+    synchronize: !!config.db.synchronize,
+  }, config.db[config.db.type]);
 
   const models = [];
   /*

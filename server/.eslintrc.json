@@ -8,7 +8,8 @@
     "__framework": true,
     "__root": true,
     "__module": true,
-    "__common": true
+    "__common": true,
+    "__service": true
   },
   "parserOptions": {
     "ecmaVersion": 2017,

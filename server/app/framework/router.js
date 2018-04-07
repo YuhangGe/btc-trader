@@ -2,6 +2,7 @@ const _util = require('./util');
 const _ = require('lodash');
 const path = require('path');
 const KOARouter = require('koa-router');
+const config = require('./config');
 
 class Router extends KOARouter {
   constructor(...args) {
@@ -62,7 +63,7 @@ class Router extends KOARouter {
   }
 }
 
-async function registerRouter(app, config) {
+async function registerRouter(app) {
   const subModules = await _util.readdir(__module);
   const subRouters = [];
   for(let i = 0; i < subModules.length; i++) {
@@ -74,7 +75,7 @@ async function registerRouter(app, config) {
     }
   }
   const rootRouter = new Router();
-  const apiPrefix = `/${config.prefix || ''}/`.replace(/\/+/, '/').replace(/\/$/, '');
+  const apiPrefix = `/${config.router.prefix || ''}/`.replace(/\/+/, '/').replace(/\/$/, '');
   subRouters.forEach(subRouter => {
     rootRouter.use(apiPrefix, subRouter.routes());
   });
